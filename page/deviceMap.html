@@ -35,77 +35,76 @@
       </div>
     </div>
     <script>
-      // This example displays a marker at the center of Australia.
-      // When the user clicks the marker, an info window opens.
-      function initMap() {
-        var a = {lat: 24.123552, lng: 120.6731373};
-        var b = {lat: 24.299, lng: 120.577};
-        var c = {lat: 24.255, lng: 120.721};
-        var d = {lat: 25.062, lng: 121.527};
-        var e = {lat: 25.036, lng: 121.499};
-        var f = {lat: 25.013, lng: 121.459};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: a
+        var geocoder, map;
 
-        });
+        function initMap() {
+            $.ajax({
+                url: 'http://140.120.54.157:8001/program/databasepmall.php',
+                data: "",
+                dataType: 'json',
+                success: getDataSuccess
+            });
+        }
 
-        var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-            '</div>'+
-            '<h4 id="firstHeading" class="firstHeading">中興大學</h4>'+
-            '<div id="bodyContent">'+
-            Date() +
-            '<p>PM2.5數值：40 μg/m³</p>'+
-            '<p>目前溫度：21.2°C</p>'+
-            '<p>目前濕度：62.9% </p>'+
-            '</div>'+
-            '</div>';
+        function getDataSuccess(data) {
+            console.log(data);
+            var dataNum = data.length;
+            geocoder = new google.maps.Geocoder();
+            var myLatlng = new google.maps.LatLng(24.1223416, 120.6742634);
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 8
+            }
+            console.log(data)
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            var ads = [];
+            for (var i = 0; i < dataNum; i++) {
+                if ($.inArray(data[i][5].toString(), ads) == -1) {
+                    ads.push(data[i][5].toString());
+                    codeAddress(data[i]);
+                }
+            }
+        }
 
-        var infowindow = new google.maps.InfoWindow({
-          content: contentString
-        });
-
-        var markerb = new google.maps.Marker({
-          position: b,
-          map: map,
-          title: 'b (Ayers Rock)'
-        });
-        var markerc = new google.maps.Marker({
-          position: c,
-          map: map,
-          title: 'c (Ayers Rock)'
-        });
-        var markerd = new google.maps.Marker({
-          position: d,
-          map: map,
-          title: 'd (Ayers Rock)'
-        });
-        var markere = new google.maps.Marker({
-          position: e,
-          map: map,
-          title: 'e (Ayers Rock)'
-        });
-        var markerf = new google.maps.Marker({
-          position: f,
-          map: map,
-          title: 'f (Ayers Rock)'
-        });
-        var markera = new google.maps.Marker({
-          position: a,
-          map: map,
-          title: 'a (Ayers Rock)'
-        });
-        markera.addListener('click', function() {
-          infowindow.open(map, markera);
-        });
-      }
-      
-
-
+        function codeAddress(data) {
+            var html;
+            console.log("#"+data[5].toString());
+            geocoder.geocode({
+                'address': data[5].toString()
+            }, function(results, status) {
+                console.log(results)
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var loc = results[0].geometry.location;;
+                    console.log("lat = " + loc.lat() + " , lng = " + loc.lng())
+                    map.setCenter(new google.maps.LatLng(loc.lat(), loc.lng()));
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: new google.maps.LatLng(loc.lat(), loc.lng()),
+                        title: "address: " + data[5].toString() + "\nname: " + data[4],
+                        animation: google.maps.Animation.DROP
+                    });
+                    marker.addListener('click', function() {
+                        html = "";
+                        html += "<h>地點名稱： " + data[5] + "</h><br><h>裝置名稱： " + data[1] + "</h><br><h>汙染數值： "+ data[2] + "</h>" ;
+                        var infowindow = new google.maps.InfoWindow({
+                            content: html
+                        });
+                        infowindow.open(map, marker);
+                    });
+                } else {
+                    var timeout = 300;
+                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                        setTimeout(function() {
+                            codeAddress(data);
+                        }, timeout)
+                    } else {
+                        // alert("Geocode was not successful for the following reason : " + status);
+                    }
+                }
+            });
+        }
     </script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf9IUL2VBnBuju0cyt-yaApjWdqJFkWxc&signed_in=true&callback=initMap"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWyjZ4K4qJb-4zINJdeY3JV_CZgjjW9Mk&callback=initMap" async defer></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     		<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
