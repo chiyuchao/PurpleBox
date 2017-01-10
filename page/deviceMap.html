@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Info windows</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css" />
+    <link rel="stylesheet" href="/vendor/waves/waves.min.css" />
+    <link rel="stylesheet" href="/css/nativedroid2.css" />
+
+    <style>
+      html, body {
+        height: 300px;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        margin: -15px;
+        padding: 0;
+        height: 700px;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-role="page">
+
+			<nd2-include data-src="/page/panel.html"></nd2-include>
+      <div data-role="header" data-position="fixed">
+				<a href="#leftpanel" class="ui-btn ui-btn-left"><i class="zmdi zmdi-menu"></i></a>
+				<h1>裝置地圖</h1>
+			</div>
+      <div role="main" class="ui-content" data-inset="false">
+        <div id="map"></div>
+      </div>
+    </div>
+    <script>
+      // This example displays a marker at the center of Australia.
+      // When the user clicks the marker, an info window opens.
+      function initMap() {
+        var a = {lat: 24.123552, lng: 120.6731373};
+        var b = {lat: 24.299, lng: 120.577};
+        var c = {lat: 24.255, lng: 120.721};
+        var d = {lat: 25.062, lng: 121.527};
+        var e = {lat: 25.036, lng: 121.499};
+        var f = {lat: 25.013, lng: 121.459};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: a
+
+        });
+
+        var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">中興大學</h4>'+
+            '<div id="bodyContent">'+
+            Date() +
+            '<p>PM2.5數值：40 μg/m³</p>'+
+            '<p>目前溫度：21.2°C</p>'+
+            '<p>目前濕度：62.9% </p>'+
+            '</div>'+
+            '</div>';
+
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        var markerb = new google.maps.Marker({
+          position: b,
+          map: map,
+          title: 'b (Ayers Rock)'
+        });
+        var markerc = new google.maps.Marker({
+          position: c,
+          map: map,
+          title: 'c (Ayers Rock)'
+        });
+        var markerd = new google.maps.Marker({
+          position: d,
+          map: map,
+          title: 'd (Ayers Rock)'
+        });
+        var markere = new google.maps.Marker({
+          position: e,
+          map: map,
+          title: 'e (Ayers Rock)'
+        });
+        var markerf = new google.maps.Marker({
+          position: f,
+          map: map,
+          title: 'f (Ayers Rock)'
+        });
+        var markera = new google.maps.Marker({
+          position: a,
+          map: map,
+          title: 'a (Ayers Rock)'
+        });
+        markera.addListener('click', function() {
+          infowindow.open(map, markera);
+        });
+      }
+      
+
+
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf9IUL2VBnBuju0cyt-yaApjWdqJFkWxc&signed_in=true&callback=initMap"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    		<script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+    		<script src="/vendor/waves/waves.min.js"></script>
+    		<script src="/js/nativedroid2.js"></script>
+    		<script src="/nd2settings.js"></script>
+  </body>
+</html>
